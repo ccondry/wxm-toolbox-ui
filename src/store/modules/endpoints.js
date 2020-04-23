@@ -1,5 +1,8 @@
 let baseUrl
 let authBaseUrl
+
+const isProduction = process.env.NODE_ENV === 'production'
+
 if (isProduction) {
   baseUrl = '/api/v1/wxm'
   authBaseUrl = '/api/v1/auth'
