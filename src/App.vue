@@ -94,7 +94,6 @@ export default {
       'toggleDevice',
       'toggleSidebar',
       'checkLogin',
-      // 'getEndpoints',
       'getDcloudSession',
       'setJwt',
       'getProvisionStatus',
@@ -103,10 +102,6 @@ export default {
     ]),
     async authCheck () {
       try {
-        // console.log('getting endpoints...')
-        // await this.getEndpoints(false)
-        // console.log('getting endpoints done.')
-
         // check the JWT in localstorage to see if the user is already logged in
         console.log('checking login...')
         await this.checkLogin()

@@ -28,10 +28,6 @@
       {{ item.meta.label || item.name }}
       <!-- down arrow -->
       <b-icon v-if="item.children && item.children.length" :icon="isExpanded(item) ? 'chevron-up' : 'chevron-down'" ></b-icon>
-      <!-- 'new' tag -->
-      <b-tag v-if="isNew(item)" type="is-info">New</b-tag>
-      <!-- 'updated' tag -->
-      <b-tag v-if="isUpdated(item)" type="is-primary">Updated</b-tag>
     </a>
 
     <span v-if="item.children && item.children.length">
@@ -41,10 +37,6 @@
             <!-- <span v-if="subItem.meta && subItem.meta.icon" class="icon is-small"><i :class="['fa', subItem.meta.icon]"></i></span> -->
             <b-icon v-if="subItem.meta && subItem.meta.icon" :icon="subItem.meta.icon" :pack="subItem.meta.pack || 'mdi'"></b-icon>
             {{ subItem.meta && subItem.meta.label || subItem.name }}
-            <!-- 'new' tag -->
-            <b-tag v-if="isNew(subItem)" type="is-info">New</b-tag>
-            <!-- 'updated' tag -->
-            <b-tag v-if="isUpdated(subItem)" type="is-primary">Updated</b-tag>
           </router-link>
         </li>
       </ul>
@@ -56,8 +48,6 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-// import fuzzy from 'fuzzy'
-import moment from 'moment'
 
 // extract menu item name
 function extract (el) {
@@ -134,35 +124,6 @@ export default {
     ...mapActions([
       'expandMenu'
     ]),
-
-    isNew (item) {
-      // menu items are new if less than 14 days old
-      try {
-        if (item.meta.created) {
-          let diff = moment().diff(moment(item.meta.created), 'days')
-          return diff < 14
-        } else {
-          return false
-        }
-      } catch (e) {
-        return false
-      }
-    },
-
-    isUpdated (item) {
-      try {
-        // menu items are updated if updated property less than 14 days old
-        // also prefer 'new' tag over 'updated' tag
-        if (!this.isNew(item) && item.meta.modified) {
-          let diff = moment().diff(moment(item.meta.modified), 'days')
-          return diff < 14
-        } else {
-          return false
-        }
-      } catch (e) {
-        return false
-      }
-    },
 
     isExpanded (item) {
       return item.meta.expanded || this.menuFilter.length

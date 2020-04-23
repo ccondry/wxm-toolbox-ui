@@ -2,23 +2,6 @@ import * as types from './mutation-types'
 import Vue from 'vue'
 
 const mutations = {
-  // [types.SET_INSTANCE] (state, data) {
-  //   console.log('setting instance to', `${data.datacenter}-${data.id}`)
-  //   state.instance = `${data.datacenter}-${data.id}`
-  // },
-  // [types.SET_INSTANCES] (state, data) {
-  //   state.instances = data
-  // },
-  // [types.SET_INSTANCES_LOADED] (state, data) {
-  //   state.instancesLoaded = data
-  // },
-  [types.SET_ENDPOINTS] (state, data) {
-    state.endpoints = data
-  },
-  [types.SET_ENDPOINTS_LOADED] (state, data) {
-    console.log('state.endpointsLoaded =', data)
-    state.endpointsLoaded = data
-  },
   [types.SET_WORKING] (state, data) {
     // if state container for this group is not existing, create it
     if (!state.working[data.group]) {

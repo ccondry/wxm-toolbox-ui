@@ -1,35 +1,30 @@
-// import * as types from '../mutation-types'
-import { post } from '../../utils'
 import { ToastProgrammatic as Toast } from 'buefy'
-
-const state = {
-  // status: null
-}
-
-const getters = {
-  // provisionStatus: state => state.status
-}
-
-const mutations = {
-  // [types.SET_PROVISION_STATUS] (state, data) {
-  //   state.status = data
-  // }
-}
 
 const actions = {
   async inviteToSupportRoom ({getters, commit, dispatch}, {email, showNotification = true}) {
     // metadata
     const group = 'webex'
     const type = 'invite'
-    const action = 'Add user to the CWCC Demo Support Webex Teams room'
+    const action = 'Add user to the WXM Demo Support Webex Teams room'
     // set working state on
     dispatch('setWorking', {group, type, value: true})
     console.log('starting', action, 'using email', email, '...')
     // REST API endpoint URL
-    const endpoint = getters.endpoints.webex
     try {
-      // send email in query string parameters
-      await post(getters.instance, getters.jwt, endpoint, {email})
+      let url = new URL(getters.endpoints.webex)
+      // append URL query paramenters
+      const params = {email}
+      Object.keys(params).forEach(key => {
+        url.searchParams.append(key, params[key])
+      })
+      const options = {
+        headers: {
+          Authorization: 'Bearer ' + getters.jwt,
+          instance: getters.instance
+        },
+        method: 'post'
+      }
+      await fetch(url, options)
       // show a Toast notification on success, if not disabled
       if (showNotification) {
         Toast.open({
@@ -54,8 +49,5 @@ const actions = {
 }
 
 export default {
-  state,
-  mutations,
-  actions,
-  getters
+  actions
 }

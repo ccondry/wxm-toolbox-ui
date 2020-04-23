@@ -3,14 +3,10 @@ import app from './app'
 import auth from './auth'
 import notifications from './notifications'
 import user from './user'
-// import templates from './templates'
 import provision from './provision'
 import cumulus from './cumulus'
-// import usage from './usage'
-import admin from './admin'
+import endpoints from './endpoints'
 import webex from './webex'
-import dcloud from './dcloud'
-import cwcc from './cwcc'
 
 export default {
   menu,
@@ -18,12 +14,8 @@ export default {
   auth,
   notifications,
   user,
-  // templates,
   provision,
   cumulus,
-  // usage,
-  admin,
-  webex,
-  dcloud,
-  cwcc
+  endpoints,
+  webex
 }

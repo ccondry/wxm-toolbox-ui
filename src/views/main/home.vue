@@ -7,7 +7,7 @@
           <h1 class="title">Welcome</h1>
           <b-field>
             <p>
-              Welcome to the Cisco Webex Contact Center Demo on dCloud.
+              Welcome to the Cisco Webex Experience Manager Demo on dCloud.
             </p>
           </b-field>
           <b-field>
@@ -64,66 +64,6 @@
             <h1 class="title">Agents</h1>
             <div class="content">
               <agents :user="user" />
-            </div>
-          </article>
-        </div>
-      </div>
-
-      <!-- Demo Website config -->
-      <div class="tile is-ancestor" v-if="isProvisioned">
-        <div class="tile is-parent is-vertical">
-          <article class="tile is-child box">
-            <h1 class="title">
-              Demo Website
-            </h1>
-            <div class="content">
-              <div class="select">
-                <select class="input" v-model="vertical" @change="verticalChanged" :disabled="working.app.user">
-                  <option value="" disabled selected>Choose Your Demo Vertical</option>
-                  <option v-for="brand in systemBrands" :value="brand.id">{{ `${brand.name} (${brand.id})` }}</option>
-                  <option disabled>-----------------------------------------</option>
-                  <option v-for="brand in userBrands" :value="brand.id" v-if="brandFilter === 'all'">{{ `${brand.name} (${brand.id})` }}</option>
-                  <option v-for="brand in myBrands" :value="brand.id" v-if="brandFilter === 'mine'">{{ `${brand.name} (${brand.id})` }}</option>
-                  <option v-for="brand in filteredSortedBrands" :value="brand.id" v-if="brandFilter === 'other'">{{ `${brand.name} (${brand.id})` }}</option>
-                </select>
-              </div>
-              &nbsp;
-              <button class="button is-success" @click="clickGo" :disabled="working.app.user">Go to Demo Website</button>
-              &nbsp;
-              <span style="font-size: 1.3em;">Or for quick access, call {{ working.app.user ? 'Loading...' : demoNumber }}</span>
-              <b-field>
-                <b-checkbox v-model="showMore">Show More</b-checkbox>
-              </b-field>
-              <b-field v-show="showMore">
-                <div class="field">
-                  <div class="field">
-                    <b-radio v-model="brandFilter"
-                    v-if="user.admin"
-                    native-value="all">Show all verticals</b-radio>
-                  </div>
-                  <div class="field">
-                    <b-radio v-model="brandFilter"
-                    native-value="mine">Show my verticals</b-radio>
-                  </div>
-                  <div class="field">
-                    <b-radio v-model="brandFilter"
-                    native-value="other">
-                    <span style="float: left;">Show this user's verticals:</span>
-                    <b-autocomplete
-                      v-model="ownerFilter"
-                      :data="autocompleteOwners">
-                      <template slot="empty">No results found</template>
-                    </b-autocomplete>
-                  </b-radio>
-                  </div>
-                </div>
-              </b-field>
-                <p>
-                  Note: You can create and configure your own vertical on the
-                <a href="/branding" target="brand-toolbox">
-                  <strong>Demo Branding Toolbox</strong>
-                </a>.
-              </p>
             </div>
           </article>
         </div>

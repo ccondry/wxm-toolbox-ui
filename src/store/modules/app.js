@@ -42,39 +42,7 @@ const mutations = {
   }
 }
 
-const actions = {
-  async getEndpoints ({getters, commit, dispatch}, showNotification = true) {
-    // production / development base API URL
-    const url = getters.isProduction ? '/api/v1/cwcc/endpoints' : 'http://localhost:3051/api/v1/cwcc/endpoints'
-    // mark loading started
-    dispatch('setLoading', {group: 'app', type: 'endpoints', value: true})
-    try {
-      console.log('getting endpoints')
-      // get endpoints from API server
-      const response = await load(getters.instance, getters.jwt, url)
-      // set the endpoints data in state
-      await commit(types.SET_ENDPOINTS, response.data)
-      // mark endpoints as loaded
-      commit(types.SET_ENDPOINTS_LOADED, true)
-    } catch (e) {
-      console.log(e)
-      // failed to get endpoints
-      if (e.response.status === 401 || e.response.status === 403) {
-        // JWT expired
-        console.log('JWT expired. logging out user locally.')
-        dispatch('unsetJwt')
-      } else {
-        // other error
-        console.error(`error during GET endpoints`, e)
-        dispatch('errorNotification', {title: `Failed to GET endpoints`, error: e})
-      }
-    } finally {
-      // mark loading done
-      dispatch('setLoading', {group: 'app', type: 'endpoints', value: false})
-    }
-  }
-}
-
+const actions = {}
 
 // return domain name part from client
 const getters = {
