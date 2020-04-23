@@ -1,6 +1,4 @@
 import * as types from '../mutation-types'
-import axios from 'axios'
-import { post, load } from '../../utils'
 
 function parseJwt (token) {
   var base64Url = token.split('.')[1]
@@ -75,12 +73,19 @@ const actions = {
     console.log('logging out user')
     try {
       // tell server we're logging out
-      const response = await post(getters.instance, getters.jwt, getters.endpoints.logout)
+      const response = await fetch(getters.endpoints.logout, {
+        method: 'post',
+        headers: {
+          Authorization: 'Bearer ' + getters.jwt,
+          instance: getters.instance
+        }
+      })
       // did they successfully log out of superuser mode?
-      if (response.status >= 200 && response.status < 300) {
-        if (response.data.jwt) {
+      if (response.ok) {
+        const json = await response.json()
+        if (json.jwt) {
           // store new auth token in localStorage
-          dispatch('setJwt', response.data.jwt)
+          dispatch('setJwt', json.jwt)
           // load user data using JWT
           // dispatch('loadUser')
           dispatch('successNotification', `Successfully logged out of ${getters.user.username}`)
@@ -99,50 +104,7 @@ const actions = {
       console.log(e.message)
     }
   },
-  async login ({getters, dispatch}, data) {
-    dispatch('setWorking', {group: 'app', type: 'login', value: true})
-    // store a local copy of user/pass
-    let username = data.username
-    let password = data.password
-    // try login request
-    try {
-      const response = await axios.post(getters.endpoints.login, {
-        username,
-        password
-      })
-      // console.log(response)
-      // if successful
-      if (response.status >= 200 && response.status < 300) {
-        // store auth token in localStorage
-        dispatch('setJwt', response.data.jwt)
-
-        dispatch('successNotification', {
-          title: `Logged in Successfully`,
-          message: ''
-        })
-
-        // load user data using JWT
-        // dispatch('loadUser')
-        // load the session details - dCloud only
-        // dispatch('getSession')
-      } else {
-        dispatch('errorNotification', {
-          title: `Login Failed`,
-          message: `${response.status} ${response.statusText}`
-        })
-      }
-    } catch (error) {
-      console.log(error)
-      dispatch('errorNotification', {
-        title: `Login Failed`,
-        message: `${error.response.status} ${error.response.statusText}`
-      })
-      throw error
-    } finally {
-      dispatch('setWorking', {group: 'app', type: 'login', value: false})
-    }
-  },
-  async checkLogin ({getters, dispatch, commit, rootState}) {
+  async checkLogin ({getters, dispatch}) {
     console.log('checking localstorage for JWT login token')
     // retrieve auth token from localStorage
     const jwt = window.localStorage.getItem('jwt')
@@ -151,10 +113,17 @@ const actions = {
       console.log('JWT login token found in localStorage. checking it...')
       // load user. this should validate JWT on server.
       try {
-        const response = await load(getters.instance, jwt, getters.endpoints.user)
-        //
-        console.log('checkLogin get user response =', response)
-        dispatch('setJwt', jwt)
+        const response = await fetch(getters.endpoints.user, {
+          method: 'post',
+          headers: {
+            Authorization: 'Bearer ' + jwt
+          }
+        })
+        if (response.ok) {
+          const json = await response.json()
+          console.log('checkLogin get user response =', json)
+          dispatch('setJwt', jwt)
+        }
       } catch (e) {
         console.log('JWT check failed:', e.response.status, e.response.data)
         if (e.response.status === 401) {

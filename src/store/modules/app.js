@@ -1,5 +1,4 @@
 import * as types from '../mutation-types'
-import {load} from '../../utils'
 
 const state = {
   device: {
@@ -46,7 +45,7 @@ const actions = {}
 
 // return domain name part from client
 const getters = {
-  domain: state => {
+  domain: () => {
     try {
       // get current hostname of the browser location
       const hostname = window.location.hostname
