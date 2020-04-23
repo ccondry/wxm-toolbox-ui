@@ -98,7 +98,7 @@ const actions = {
       dispatch('setWorking', {group: 'app', type: 'user', value: true})
       await dispatch('postData', {
         name: 'save demo configuration',
-        endpoint: getters.endpoints.userDemo + '?demo=cwcc',
+        endpoint: getters.endpoints.userDemo + '?demo=wxm',
         success: 'Demo configuration saved.',
         fail: 'Failed to save your demo configuration',
         data,

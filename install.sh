@@ -7,9 +7,9 @@ if [ $? -eq 0 ]; then
   if [ $? -eq 0 ]; then
     echo "npm build successful"
     echo "making web files directory"
-    mkdir -p /var/www/toolbox/cwcc
+    mkdir -p /var/www/toolbox/wxm
     echo "copying new web files"
-    cp -rf dist/* /var/www/toolbox/cwcc/
+    cp -rf dist/* /var/www/toolbox/wxm/
     echo "web files copied. You still need to add an entry for nginx to point to this folder."
     echo "and it would be nice to have a cron job to keep this repo updated."
   else

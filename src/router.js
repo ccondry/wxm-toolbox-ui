@@ -13,7 +13,7 @@ export default new VueRouter({
     ...generateRoutesFromMenu(menuModule.state.items),
     {
       path: '*',
-      redirect: '/cwcc/main/home'
+      redirect: '/wxm/main/home'
     }
   ]
 })

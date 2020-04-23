@@ -109,6 +109,13 @@ export default {
         })
       }
 
+      if (this.user.admin) {
+        ret.push({
+          href: '/wxm',
+          text: 'Webex Experience Manager v1 Instant Demo'
+        })
+      }
+
       // only show cxdemo demos if on cxdemo.net domain.
       if (this.isCxdemo) {
         ret.push({
