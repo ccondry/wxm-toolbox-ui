@@ -17,10 +17,6 @@
               <strong>Password: {{ agent.password }}</strong>
               <a @click="clickCopy(agent.password, 'Password')"><b-icon icon="layers"></b-icon></a>
             </p>
-            <p>
-              <strong>Extension: {{ agent.extension }}</strong>
-              <a @click="clickCopy(agent.extension, 'Extension')"><b-icon icon="layers"></b-icon></a>
-            </p>
           </article>
         </div>
 
@@ -54,19 +50,17 @@ export default {
       return [
         {
           picture: 'https://mm.cxdemo.net/static/images/cumulus/common/author1.png',
-          username: 'sjeffers' + this.user.id + '@dcloud.cisco.com',
-          password: 'C1sco12345',
-          extension: '1080' + this.user.id,
+          username: 'sjeffers' + this.user.id + '_finance',
+          password: 'dcloud@123',
           name: 'Sandra Jefferson',
           role: 'Agent'
         },
         {
           picture: 'https://mm.cxdemo.net/static/images/cumulus/common/author3.png',
-          username: 'rbarrows' + this.user.id + '@dcloud.cisco.com',
-          password: 'C1sco12345',
-          extension: '1082' + this.user.id,
+          username: 'rbarrows' + this.user.id + '_finance',
+          password: 'dcloud@123',
           name: 'Rick Barrows',
-          role: 'Administrator / Agent'
+          role: 'Supervisor'
         }
       ]
     }

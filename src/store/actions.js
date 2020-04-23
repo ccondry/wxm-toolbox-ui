@@ -30,49 +30,45 @@ export const loadToState = async function ({getters, commit, dispatch}, options)
   }
   try {
     let url = new URL(options.endpoint)
-    // append URL query paramenters
-    Object.keys(options.query).forEach(key => {
-      url.searchParams.append(key, params[key])
-    })
+    if (options.query) {
+      // append URL query paramenters
+      Object.keys(options.query).forEach(key => {
+        url.searchParams.append(key, params[key])
+      })
+    }
     // go
     const response = await fetch(options.endpoint, {
       method: 'get',
       headers: {
-        Authorization: 'Bearer ' + jwt
+        Authorization: 'Bearer ' + getters.jwt
       }
     })
     if (response.ok) {
-      const text = await response.text()
       const json = await response.json()
-      let data
-      if (typeof options.transform === 'function') {
-        data = options.transform(text)
-      } else {
-        data = json
-      }
-      commit(options.mutation, data)
+      commit(options.mutation, json)
       if (options.showNotification) {
         dispatch('successNotification', `Successfully loaded ${options.name}`)
       }
-      return text
-    } else if (response.status === 401 && text.toLowerCase() === 'jwt expired') {
+      return json
+    } else if (response.status === 401) {
       // JWT expired
       console.log('JWT expired. logging out user locally.')
       dispatch('unsetJwt')
     } else {
+      const text = await response.text()
       throw Error(`${response.status} ${response.statusText} - ${text}`)
     }
   } catch (e) {
-    console.error(`error during GET ${options.name}`, e)
+    console.error(`error during GET ${options.name}`, e.messaage)
     dispatch('errorNotification', {title: `Failed to GET ${options.name}`, error: e})
   }
 }
 
-export const setWorking = function ({getters, commit, dispatch}, {group, type, value = true}) {
+export const setWorking = function ({commit}, {group, type, value = true}) {
   commit(types.SET_WORKING, {group, type, value})
 }
 
-export const setLoading = function ({getters, commit, dispatch}, {group, type, value = true}) {
+export const setLoading = function ({commit}, {group, type, value = true}) {
   commit(types.SET_LOADING, {group, type, value})
 }
 
@@ -91,28 +87,40 @@ export const setLoading = function ({getters, commit, dispatch}, {group, type, v
 //   }
 // }
 
-// export const postData = async function ({getters, commit, dispatch}, options) {
-//   try {
-//     console.log(`postData ${options.endpoint}`, options.data)
-//     const response = await post(getters.instance, getters.jwt, options.endpoint, options.query, options.data)
-//     console.log(`post ${options.name}`, response)
-//     if (options.showNotification) {
-//       dispatch('successNotification', `Successfully updated ${options.name}`)
-//     }
-//     let data
-//     // transform response data before commiting?
-//     if (typeof options.transform === 'function') {
-//       data = options.transform(response)
-//     } else {
-//       data = response.data
-//     }
-//     // commit data to state?
-//     if (options.mutation) {
-//       commit(options.mutation, data)
-//     }
-//     return response
-//   } catch (e) {
-//     console.log(`error during POST ${options.name}`, e)
-//     dispatch('errorNotification', {title: `Failed to POST ${options.name}`, error: e})
-//   }
-// }
+export const postData = async function ({getters, dispatch}, options) {
+  try {
+    console.log(`postData ${options.endpoint}`, options.data)
+
+    let url = new URL(options.endpoint)
+    // append URL query paramenters
+    if (options.query) {
+      Object.keys(options.query).forEach(key => {
+        url.searchParams.append(key, params[key])
+      })
+    }
+    // go
+    const response = await fetch(options.endpoint, {
+      method: 'post',
+      headers: {
+        Authorization: 'Bearer ' + getters.jwt
+      },
+      body: options.data
+    })
+    // ok?
+    if (response.ok) {
+      // const text = await response.text()
+      const json = await response.json()
+      return json
+    } else if (response.status === 401) {
+      // JWT expired
+      console.log('JWT expired. logging out user locally.')
+      dispatch('unsetJwt')
+    } else {
+      const text = await response.text()
+      throw Error(`${response.status} ${response.statusText} - ${text}`)
+    }
+  } catch (e) {
+    console.log(`error during POST ${options.name}`, e)
+    // dispatch('errorNotification', {title: `Failed to POST ${options.name}`, error: e})
+  }
+}

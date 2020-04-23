@@ -15,7 +15,8 @@ const endpoints = {
   login: authBaseUrl + '/login',
   logout: authBaseUrl + '/logout',
   user: authBaseUrl + '/user',
-  vertical: 'https://mm.cxdemo.net/api/v1/vertical',
+  vertical: 'https://mm.cxdemo.net/api/v1/verticals?all=true',
+  cumulus: authBaseUrl + '/cumulus?demo=wxm',
   provision: baseUrl + '/provision',
   webex: baseUrl + '/webex'
 }

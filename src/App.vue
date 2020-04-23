@@ -68,12 +68,10 @@ export default {
       if (this.authenticated === true) {
         // get their provision status
         this.getProvisionStatus(false)
-        // and get dcloud session info
-        this.getDcloudSession(false)
         // and get verticals list
         this.loadVerticals(false)
         // and get user demo config
-        this.loadDemoConfig(false)
+        // this.loadDemoConfig(false)
       }
     })
   },
@@ -81,7 +79,6 @@ export default {
   computed: {
     ...mapGetters([
       'sidebar',
-      'authEnabled',
       'authenticated',
       'loading',
       'endpoints',
@@ -94,11 +91,10 @@ export default {
       'toggleDevice',
       'toggleSidebar',
       'checkLogin',
-      'getDcloudSession',
       'setJwt',
       'getProvisionStatus',
       'loadVerticals',
-      'loadDemoConfig'
+      // 'loadDemoConfig'
     ]),
     async authCheck () {
       try {

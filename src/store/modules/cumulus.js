@@ -4,14 +4,21 @@ import { ToastProgrammatic as Toast } from 'buefy'
 const state = {
   brands: [],
   verticals: [],
-  demoConfig: {}
+  // demoConfig: {}
 }
 
 const getters = {
   brands: state => state.brands,
   verticals: state => state.verticals,
-  demoConfig: state => state.demoConfig
+  demoConfig: (state, getters) => {
+    try {
+      return getters.user.demo.wxm || {}
+    } catch (e) {
+      return {}
+    }
+  }
 }
+
 
 const mutations = {
   [types.SET_BRANDS] (state, data) {
@@ -20,9 +27,9 @@ const mutations = {
   [types.SET_VERTICALS] (state, data) {
     state.verticals = data
   },
-  [types.SET_DEMO_CONFIG] (state, data) {
-    state.demoConfig = data
-  }
+  // [types.SET_DEMO_CONFIG] (state, data) {
+  //   state.demoConfig = data
+  // }
 }
 
 const actions = {
@@ -70,29 +77,6 @@ const actions = {
       dispatch('setLoading', {group: 'app', type: 'verticals', value: false})
     }
   },
-  async loadDemoConfig ({getters, commit, dispatch}, showNotification = true) {
-    console.log('loadDemoConfig running...')
-    dispatch('setLoading', {group: 'session', type: 'config', value: true})
-    try {
-      await dispatch('loadToState', {
-        name: 'load demo session configuration',
-        endpoint: getters.endpoints.cumulus,
-        mutation: types.SET_DEMO_CONFIG,
-        showNotification
-      })
-    } catch (e) {
-      console.log('error loading demo session configuration', e)
-      // dispatch('errorNotification', {title: 'Failed to load demo session configuration', error: e})
-      Toast.open({
-        duration: 5000,
-        message: `load demo session configuration failed`,
-        // position: 'is-bottom',
-        type: 'is-danger'
-      })
-    } finally {
-      dispatch('setLoading', {group: 'session', type: 'config', value: false})
-    }
-  },
   async saveDemoConfig ({getters, commit, dispatch}, {data, showNotification = true}) {
     try {
       dispatch('setWorking', {group: 'app', type: 'user', value: true})
@@ -104,6 +88,7 @@ const actions = {
         data,
         showNotification
       })
+      await dispatch('getUser')
     } catch (e) {
       console.error('error loading defaults', e)
       dispatch('errorNotification', {title: 'Failed to load user details', error: e})

@@ -17,5 +17,5 @@ export const SET_PROVISION_STATUS = 'SET_PROVISION_STATUS'
 
 // dcloud
 export const SET_BRANDS = 'SET_BRANDS'
-export const SET_DEMO_CONFIG = 'SET_DEMO_CONFIG'
+// export const SET_DEMO_CONFIG = 'SET_DEMO_CONFIG'
 export const SET_VERTICALS = 'SET_VERTICALS'

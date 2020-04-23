@@ -1,7 +1,7 @@
 import { ToastProgrammatic as Toast } from 'buefy'
 
 const actions = {
-  async inviteToSupportRoom ({getters, commit, dispatch}, {email, showNotification = true}) {
+  async inviteToSupportRoom ({getters, dispatch}, {email, showNotification = true}) {
     // metadata
     const group = 'webex'
     const type = 'invite'
@@ -11,20 +11,10 @@ const actions = {
     console.log('starting', action, 'using email', email, '...')
     // REST API endpoint URL
     try {
-      let url = new URL(getters.endpoints.webex)
-      // append URL query paramenters
-      const params = {email}
-      Object.keys(params).forEach(key => {
-        url.searchParams.append(key, params[key])
+      await dispatch('postData', {
+        endpoint: getters.endpoints.webex,
+        query: {email}
       })
-      const options = {
-        headers: {
-          Authorization: 'Bearer ' + getters.jwt,
-          instance: getters.instance
-        },
-        method: 'post'
-      }
-      await fetch(url, options)
       // show a Toast notification on success, if not disabled
       if (showNotification) {
         Toast.open({

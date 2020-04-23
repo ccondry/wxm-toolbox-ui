@@ -104,33 +104,17 @@ const actions = {
       console.log(e.message)
     }
   },
-  async checkLogin ({getters, dispatch}) {
+  async checkLogin ({dispatch}) {
     console.log('checking localstorage for JWT login token')
     // retrieve auth token from localStorage
     const jwt = window.localStorage.getItem('jwt')
     // if we found a token, check the web service to see if it's still valid
     if (jwt !== null) {
       console.log('JWT login token found in localStorage. checking it...')
+      // put jwt in state
+      await dispatch('setJwt', jwt)
       // load user. this should validate JWT on server.
-      try {
-        const response = await fetch(getters.endpoints.user, {
-          method: 'post',
-          headers: {
-            Authorization: 'Bearer ' + jwt
-          }
-        })
-        if (response.ok) {
-          const json = await response.json()
-          console.log('checkLogin get user response =', json)
-          dispatch('setJwt', jwt)
-        }
-      } catch (e) {
-        console.log('JWT check failed:', e.response.status, e.response.data)
-        if (e.response.status === 401) {
-          // JWT invalid - delete it from localStorage
-          dispatch('unsetJwt')
-        }
-      }
+      dispatch('loadUser')
     } else {
       console.log('JWT not found in localstorage.')
       // forward user to login page if production
