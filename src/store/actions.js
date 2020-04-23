@@ -60,6 +60,7 @@ export const loadToState = async function ({getters, commit, dispatch}, options)
     }
   } catch (e) {
     console.error(`error during GET ${options.name}`, e.messaage)
+    console.error(`error during GET ${options.name}`, e)
     dispatch('errorNotification', {title: `Failed to GET ${options.name}`, error: e})
   }
 }
