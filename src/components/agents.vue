@@ -28,7 +28,7 @@
     </div>
     <center>
       <b-field>
-        <button class="button is-success" @click="clickPortal">Go to Webex Contact Center Portal</button>
+        <button class="button is-success" @click="clickPortal">Go to Webex Experience Manager Portal</button>
       </b-field>
     </center>
 
