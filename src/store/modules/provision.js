@@ -24,6 +24,7 @@ const actions = {
       const endpoint = getters.endpoints.provision
       console.log('loading provision status from endpoint', endpoint, '...')
       const response = await dispatch('loadToState', {
+        name: 'get provision status',
         endpoint,
         mutation: types.SET_PROVISION_STATUS
       })
