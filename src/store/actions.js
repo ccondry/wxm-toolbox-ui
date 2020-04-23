@@ -38,7 +38,7 @@ export const loadToState = async function ({getters, commit, dispatch}, options)
       })
     }
     // go
-    const response = await fetch(options.endpoint, {
+    const response = await fetch(url, {
       method: 'get',
       headers: {
         Authorization: 'Bearer ' + getters.jwt
