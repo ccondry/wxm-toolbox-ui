@@ -4,8 +4,8 @@ let authBaseUrl
 const isProduction = process.env.NODE_ENV === 'production'
 
 if (isProduction) {
-  baseUrl = '/api/v1/wxm'
-  authBaseUrl = '/api/v1/auth'
+  baseUrl = window.location.origin + '/api/v1/wxm'
+  authBaseUrl = window.location.origin + '/api/v1/auth'
 } else {
   baseUrl = 'http://localhost:3066/api/v1/wxm'
   authBaseUrl = 'http://localhost:3032/api/v1/auth'

@@ -30,7 +30,7 @@ export const loadToState = async function ({getters, commit, dispatch}, options)
     // throw Error(message)
   }
   try {
-    let url = new URL(options.endpoint, '')
+    let url = new URL(options.endpoint)
     if (options.query) {
       // append URL query paramenters
       Object.keys(options.query).forEach(key => {
@@ -93,7 +93,7 @@ export const postData = async function ({getters, dispatch}, options) {
   try {
     console.log(`postData ${options.endpoint}`, options.data)
 
-    let url = new URL(options.endpoint, '')
+    let url = new URL(options.endpoint)
     // append URL query paramenters
     if (options.query) {
       Object.keys(options.query).forEach(key => {
