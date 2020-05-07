@@ -54,7 +54,7 @@ const actions = {
           endpoint
         })
         if (showNotification) {
-          dispatch('successNotification', 'Successfully provisioning your account.')
+          dispatch('successNotification', 'Successfully provisioned your account.')
         }
         dispatch('getProvisionStatus', false)
       } catch (e) {
