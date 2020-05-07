@@ -156,14 +156,9 @@ export default {
         }
       })
     },
-    async clickProvision () {
+    clickProvision () {
       console.log('user clicked Provision Me button')
-      try {
-        await this.provisionUser()
-        // after provision starts, notify the user they need to request
-        // manual chat provisioning
-        throw e
-      }
+      this.provisionUser()
     },
     getDid (name) {
       try {
