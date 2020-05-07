@@ -51,7 +51,10 @@ const actions = {
       try {
         // send provision request to API
         await dispatch('postData', {
-          endpoint
+          endpoint,
+          error (data) {
+            dispatch('errorNotification', {title: 'Failed provision', message: `${data.status} ${data.statusText} - ${data.text}`})
+          }
         })
         if (showNotification) {
           dispatch('successNotification', 'Successfully provisioned your account.')

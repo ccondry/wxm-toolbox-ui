@@ -119,7 +119,14 @@ export const postData = async function ({getters, dispatch}, options) {
       dispatch('unsetJwt')
     } else {
       const text = await response.text()
-      throw Error(`${response.status} ${response.statusText} - ${text}`)
+      // throw Error(`${response.status} ${response.statusText} - ${text}`)
+      if (typeof options.error === 'function') {
+        error({
+          status: response.status,
+          statusText: response.statusText,
+          text
+        })
+      }
     }
   } catch (e) {
     console.log(`error during POST ${options.name}`, e)
