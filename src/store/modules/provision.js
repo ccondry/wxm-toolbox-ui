@@ -12,7 +12,7 @@ const getters = {
 
 const mutations = {
   [types.SET_PROVISION_STATUS] (state, data) {
-    state.status = data
+    state.status = data[0]
   }
 }
 
@@ -26,7 +26,11 @@ const actions = {
       const response = await dispatch('loadToState', {
         name: 'get provision status',
         endpoint,
-        mutation: types.SET_PROVISION_STATUS
+        mutation: types.SET_PROVISION_STATUS,
+        query: {
+          demo: 'wxm',
+          version: 'v1'
+        }
       })
       console.log('load provision status - response:', response)
       if (showNotification) {
