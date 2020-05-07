@@ -47,7 +47,7 @@ const actions = {
     dispatch('setWorking', {group: 'user', type: 'provision', value: true})
     console.log('starting provision...')
     try {
-      const endpoint = getters.endpoints.provision
+      const endpoint = getters.endpoints.doProvision
       try {
         // send provision request to API
         await dispatch('postData', {

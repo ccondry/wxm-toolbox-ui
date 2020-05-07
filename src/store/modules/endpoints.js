@@ -17,6 +17,9 @@ const endpoints = {
   user: authBaseUrl + '/user',
   vertical: 'https://mm.cxdemo.net/api/v1/verticals?all=true',
   cumulus: authBaseUrl + '/cumulus?demo=wxm',
+  // do provision
+  doProvision: baseUrl + '/provision',
+  // get provision status
   provision: authBaseUrl + '/provision',
   webex: baseUrl + '/webex'
 }
