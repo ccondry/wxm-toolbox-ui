@@ -34,7 +34,7 @@ export const loadToState = async function ({getters, commit, dispatch}, options)
     if (options.query) {
       // append URL query paramenters
       Object.keys(options.query).forEach(key => {
-        url.searchParams.append(key, params[key])
+        url.searchParams.append(key, options.query[key])
       })
     }
     // go
@@ -97,7 +97,7 @@ export const postData = async function ({getters, dispatch}, options) {
     // append URL query paramenters
     if (options.query) {
       Object.keys(options.query).forEach(key => {
-        url.searchParams.append(key, params[key])
+        url.searchParams.append(key, options.query[key])
       })
     }
     // go
