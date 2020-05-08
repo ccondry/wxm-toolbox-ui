@@ -17,7 +17,7 @@
             </p>
           </b-field>
           <b-field>
-            <button class="button is-success" @click.prevent="showDialog" >
+            <button class="button is-success" @click.prevent="showSupportRoomDialog" >
               Join Support Room
             </button>
           </b-field>
@@ -49,8 +49,10 @@
               </p>
             </b-field>
             <b-field>
-              <button class="button is-success" @click.prevent="clickProvision" :disabled="working.user.provision">
-                {{ working.user.provision ? 'Working...' : 'Yes, Provision Me' }}
+              <button class="button is-success" 
+              @click.prevent="showProvisionDialog" 
+              :disabled="working.user.provision">
+               {{ working.user.provision ? `Working - ${provisionTime}` : 'Yes, Provision Me' }}
               </button>
             </b-field>
           </article>
@@ -82,8 +84,10 @@
               </p>
             </b-field>
             <b-field>
-              <button class="button is-success" @click.prevent="clickProvision" :disabled="working.user.provision">
-                {{ working.user.provision ? 'Working...' : 'Yes, Provision Me Anyway' }}
+              <button class="button is-success" 
+              @click.prevent="showProvisionDialog" 
+              :disabled="working.user.provision">
+                {{ working.user.provision ? `Working - ${provisionTime}` : 'Yes, Provision Me Anyway' }}
               </button>
             </b-field>
           </article>
@@ -109,7 +113,9 @@ export default {
       ownerFilter: '',
       brandFilter: 'mine',
       vertical: 'finance',
-      showMore: false
+      showMore: false,
+      timerEnd: 0,
+      timerNow: 0
     }
   },
 
@@ -123,6 +129,12 @@ export default {
       'provisionUser',
       'saveDemoConfig'
     ]),
+    startTimer () {
+      // advance the timer every 1 second
+      setInterval(() => {
+        this.timerNow = new Date().getTime()
+      }, 1000)
+    },
     verticalChanged (e) {
       console.log('vertical changed', e.target.value)
       // construct data body to send to API
@@ -140,7 +152,7 @@ export default {
       console.log('user clicked button to go to demo website')
       window.open(this.brandDemoLink, 'brand')
     },
-    showDialog (event) {
+    showSupportRoomDialog (event) {
       // show dialog
       this.$buefy.dialog.prompt({
         title: 'Join the Webex Teams support room',
@@ -156,9 +168,35 @@ export default {
         }
       })
     },
-    clickProvision () {
-      console.log('user clicked Provision Me button')
-      this.provisionUser()
+    showProvisionDialog (event) {
+      // show dialog
+      this.$buefy.dialog.prompt({
+        title: 'Provision',
+        message: `What is your corporate email address?`,
+        type: 'is-success',
+        confirmText: 'Start Provision',
+        inputAttrs: {
+          placeholder: 'username@example.com',
+          value: this.user.email
+        },
+        onConfirm: (email) => {
+          this.provisionUser({email})
+          // reprovision or first time?
+          if (this.isProvisioned) {
+            // reprovision
+            // set timer for working estimate
+            // 8 seconds in milliseconds
+            this.timerEnd = new Date().getTime() + 8 * 1000
+            this.startTimer()
+          } else {
+            // first provision
+            // set timer for working estimate
+            // 30 seconds in milliseconds
+            this.timerEnd = new Date().getTime() + 30 * 1000
+            this.startTimer()
+          }
+        }
+      })
     },
     getDid (name) {
       try {
@@ -180,6 +218,23 @@ export default {
       'dcloudSession',
       'demoConfig'
     ]),
+    timeLeft () {
+      // returns the estimated time remaining to complete provisioning
+      // const now = new Date().getTime()
+      const timeLeft = this.timerEnd - this.timerNow
+      return Math.ceil(timeLeft / 1000)
+    },
+    provisionTime () {
+      if (this.timeLeft < 0) {
+        return 'Almost done...'
+      } else if (this.timeLeft > 500) {
+        // validate sane output
+        // over 500 is probably wrong... so say something else
+        return `Estimating time remaining...`
+      } else {
+        return `About ${this.timeLeft} seconds remaining...`
+      }
+    },
     demoNumber () {
       switch (this.vertical) {
         case 'city': return this.getDid('DID5')
