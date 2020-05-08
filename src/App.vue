@@ -7,7 +7,7 @@
       <div v-if="authCheckDone">
         <!-- <nprogress-container></nprogress-container> -->
         <navbar :show="true"></navbar>
-        <sidebar :show="sidebar.opened && !sidebar.hidden"></sidebar>
+        <!-- <sidebar :show="sidebar.opened && !sidebar.hidden"></sidebar> -->
         <app-main></app-main>
       </div>
     </div>
@@ -143,43 +143,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss">
-// @import '~animate.css';
-// .animated {
-//   animation-duration: .377s;
-// }
-
-// @import '~bulma';
-
-// $fa-font-path: '~font-awesome/fonts/';
-// @import '~font-awesome/scss/font-awesome';
-
-html {
-  // background-color: whitesmoke;
-}
-
-// .nprogress-container {
-//   position: fixed !important;
-//   width: 100%;
-//   height: 50px;
-//   z-index: 2048;
-//   pointer-events: none;
-//
-//   #nprogress {
-//     $color: #48e79a;
-//
-//     .bar {
-//       background: $color;
-//     }
-//     .peg {
-//       box-shadow: 0 0 10px $color, 0 0 5px $color;
-//     }
-//
-//     .spinner-icon {
-//       border-top-color: $color;
-//       border-left-color: $color;
-//     }
-//   }
-// }
-</style>
