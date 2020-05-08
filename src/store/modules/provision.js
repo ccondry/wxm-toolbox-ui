@@ -43,33 +43,46 @@ const actions = {
       dispatch('setLoading', {group: 'user', type: 'provision', value: false})
     }
   },
-  async provisionUser ({getters, dispatch}, showNotification = true) {
+  async provisionUser ({getters, dispatch}, {showNotification = true, body}) {
     dispatch('setWorking', {group: 'user', type: 'provision', value: true})
     console.log('starting provision...')
     try {
-      const endpoint = getters.endpoints.doProvision
-      try {
-        // send provision request to API
-        await dispatch('postData', {
-          endpoint,
-          error (data) {
-            dispatch('errorNotification', {title: 'Failed provision', message: `${data.status} ${data.statusText} - ${data.text}`})
-          },
-          success (data) {
-            if (showNotification) {
-              dispatch('successNotification', 'Successfully provisioned your account.')
-            }
-          }
+      // go REST
+      const response = await fetch(getters.endpoints.doProvision, {
+        method: 'POST',
+        headers: {
+          Authorization: 'Bearer ' + getters.jwt
+        },
+        body
+      })
+      // REST ok?
+      if (response.ok) {
+        console.log('successfully provisioned user account.')
+        // show success message to user
+        if (showNotification) {
+          dispatch('successNotification', 'Successfully provisioned your account.')
+        }
+      } else if (response.status === 401) {
+        // JWT expired
+        console.log('JWT expired. logging out user locally.')
+        dispatch('unsetJwt')
+      } else {
+        // not a 401 error
+        console.log('Failed to provisioned user account:', `${response.status} ${response.statusText} - ${text}`)
+        const text = await response.text()
+        // throw Error(`${response.status} ${response.statusText} - ${text}`)
+        dispatch('errorNotification', {
+          title: 'Failed provision',
+          message: `${response.status} ${response.statusText} - ${text}`
         })
-        dispatch('getProvisionStatus', false)
-      } catch (e) {
-        console.log('error during provision script', e)
-        dispatch('errorNotification', {title: 'provision failed', error: e})
       }
     } catch (e) {
       console.log('error during provision script', e)
-      dispatch('errorNotification', {title: 'provision script failed', error: e})
+      dispatch('errorNotification', {title: 'Error during provision', error: e})
     } finally {
+      // check provision status again now to get updated data from server
+      dispatch('getProvisionStatus', false)
+      // reset working state
       dispatch('setWorking', {group: 'user', type: 'provision', value: false})
     }
   }

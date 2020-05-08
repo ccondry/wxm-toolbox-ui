@@ -21,7 +21,7 @@ const endpoints = {
   doProvision: baseUrl + '/provision',
   // get provision status
   provision: authBaseUrl + '/provision',
-  webex: baseUrl + '/webex'
+  webex: authBaseUrl + '/resource/joinWxmSupportRoom'
 }
 
 
