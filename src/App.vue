@@ -11,8 +11,6 @@
         <app-main></app-main>
       </div>
     </div>
-    <!-- this is for copy/paste javascript code -->
-    <input id="copy-paste" />
   </div>
 </template>
 

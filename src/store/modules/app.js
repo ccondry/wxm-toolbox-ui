@@ -1,4 +1,5 @@
 import * as types from '../mutation-types'
+import {ToastProgrammatic as Toast} from 'buefy'
 
 const state = {
   device: {
@@ -41,7 +42,48 @@ const mutations = {
   }
 }
 
-const actions = {}
+const actions = {
+  copyToClipboard (options, {string, type = 'Text'}) {
+    console.log('copyToClipboard', type, string)
+    // copy text to clipboard
+    const input = document.createElement('input')
+    document.body.appendChild(input)
+    input.value = string
+    // input.focus()
+    input.select()
+    // console.log('input field', input)
+    // const range = document.createRange()
+    // range.selectNode(input)
+    // window.getSelection().addRange(range)
+    // console.log('range', range)
+    const result = document.execCommand('copy')
+    if (result === 'unsuccessful') {
+      // failed
+      console.error('Failed to copy text.')
+    } else {
+      // success
+      // this.$snackbar.open({
+      //   message: 'Text Copied',
+      //   type: 'is-success',
+      //   position: 'is-top'
+      // })
+      Toast.open({
+        // duration: 5000,
+        // message: `load brands failed`,
+        // position: 'is-bottom',
+        // type: 'is-danger'
+        message: type + ' Copied to Your Clipboard',
+        queue: false
+      })
+    }
+
+    // Remove the selections - NOTE: Should use
+    // removeRange(range) when it is supported
+    window.getSelection().removeAllRanges()
+    // remove the input field
+    input.remove()
+  }
+}
 
 // return domain name part from client
 const getters = {
