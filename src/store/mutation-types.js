@@ -19,3 +19,6 @@ export const SET_PROVISION_STATUS = 'SET_PROVISION_STATUS'
 export const SET_BRANDS = 'SET_BRANDS'
 // export const SET_DEMO_CONFIG = 'SET_DEMO_CONFIG'
 export const SET_VERTICALS = 'SET_VERTICALS'
+
+// REST API software version and stuff
+export const SET_SERVER_INFO = 'SET_SERVER_INFO'

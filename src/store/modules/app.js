@@ -1,5 +1,6 @@
 import * as types from '../mutation-types'
 import {ToastProgrammatic as Toast} from 'buefy'
+import pkg from '../../../package.json'
 
 const state = {
   device: {
@@ -14,7 +15,8 @@ const state = {
     translate3d: true
   },
   sessionId: '',
-  datacenter: ''
+  datacenter: '',
+  apiVersion: 'loading...'
 }
 
 const mutations = {
@@ -39,10 +41,33 @@ const mutations = {
     for (let name in effectItem) {
       state.effect[name] = effectItem[name]
     }
+  },
+
+  [types.SET_SERVER_INFO] (state, data) {
+    state.apiVersion = data.version
   }
 }
 
 const actions = {
+  async loadServerInfo ({getters, dispatch}) {
+    dispatch('setLoading', {group: 'app', type: 'serverInfo', value: true})
+    console.log('loading API server info...')
+    try {
+      const endpoint = getters.endpoints.info
+      console.log('loading API server info endpoint', endpoint, '...')
+      const response = await dispatch('loadToState', {
+        name: 'get API server info',
+        endpoint,
+        mutation: types.SET_SERVER_INFO
+      })
+      console.log('load API server info - response:', response)
+    } catch (e) {
+      console.log('error loading API server info', e)
+      dispatch('errorNotification', {title: 'Failed to load API server info', error: e})
+    } finally {
+      dispatch('setLoading', {group: 'app', type: 'serverInfo', value: false})
+    }
+  },
   copyToClipboard (options, {string, type = 'Text'}) {
     console.log('copyToClipboard', type, string)
     // copy text to clipboard
@@ -113,7 +138,9 @@ const getters = {
   // is this a cisco.com address? assume dcloud
   isDcloud: (state, getters) => getters.domain === 'cisco',
   // is this a cxdemo.net address? it is cxdemo
-  isCxdemo: (state, getters) => getters.domain === 'cxdemo'
+  isCxdemo: (state, getters) => getters.domain === 'cxdemo',
+  uiVersion: () => pkg.version,
+  apiVersion: (state, getters) => state.apiVersion
 }
 
 export default {

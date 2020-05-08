@@ -11,6 +11,16 @@
         <app-main></app-main>
       </div>
     </div>
+    <footer class="footer" style="padding: 0; background-color: #ebebeb">
+      <div class="content">
+        <small style="padding-right: 2em;">
+          UI version {{ uiVersion }}
+        </small>
+        <small>
+          API version {{ apiVersion }}
+        </small>
+      </div>
+    </footer>
   </div>
 </template>
 
@@ -70,6 +80,8 @@ export default {
         this.loadVerticals(false)
         // and get user demo config
         // this.loadDemoConfig(false)
+        // and get server info
+        this.loadServerInfo()
       }
     })
   },
@@ -80,7 +92,9 @@ export default {
       'authenticated',
       'loading',
       'endpoints',
-      'endpointsLoaded'
+      'endpointsLoaded',
+      'uiVersion',
+      'apiVersion'
     ])
   },
 
@@ -92,7 +106,7 @@ export default {
       'setJwt',
       'getProvisionStatus',
       'loadVerticals',
-      // 'loadDemoConfig'
+      'loadServerInfo'
     ]),
     async authCheck () {
       try {
