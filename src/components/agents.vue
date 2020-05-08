@@ -40,7 +40,7 @@ export default {
 
   data () {
     return {
-      portalUrl: 'https://cx.cloucherry.com',
+      portalUrl: 'https://cx.cloudcherry.com',
       clipboard: 'initial-value'
     }
   },
