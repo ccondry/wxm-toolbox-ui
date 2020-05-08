@@ -50,15 +50,15 @@ export default {
       return [
         {
           picture: 'https://mm.cxdemo.net/static/images/cumulus/common/author1.png',
-          username: 'dcwxmbanksjeffers' + this.user.id + '_finance',
-          password: 'dcloud@123',
+          username: 'dcwxmbanksjeffers' + this.user.id,
+          password: 'C1sco12345',
           name: 'Sandra Jefferson',
           role: 'Agent'
         },
         {
           picture: 'https://mm.cxdemo.net/static/images/cumulus/common/author3.png',
-          username: 'dcwxmbankrbarrows' + this.user.id + '_finance',
-          password: 'dcloud@123',
+          username: 'dcwxmbankrbarrows' + this.user.id,
+          password: 'C1sco12345',
           name: 'Rick Barrows',
           role: 'Supervisor'
         }
