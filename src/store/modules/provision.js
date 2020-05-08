@@ -43,7 +43,7 @@ const actions = {
       dispatch('setLoading', {group: 'user', type: 'provision', value: false})
     }
   },
-  async provisionUser ({getters, dispatch}, {showNotification = true, body}) {
+  async provisionUser ({getters, dispatch}, {showNotification = true, email}) {
     dispatch('setWorking', {group: 'user', type: 'provision', value: true})
     console.log('starting provision...')
     try {
@@ -53,7 +53,9 @@ const actions = {
         headers: {
           Authorization: 'Bearer ' + getters.jwt
         },
-        body
+        body: JSON.stringify({
+          email
+        })
       })
       // REST ok?
       if (response.ok) {
