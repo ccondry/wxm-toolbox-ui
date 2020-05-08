@@ -1,5 +1,3 @@
-import { ToastProgrammatic as Toast } from 'buefy'
-
 const actions = {
   async inviteToSupportRoom ({getters, dispatch}, {email, showNotification = true}) {
     // metadata
