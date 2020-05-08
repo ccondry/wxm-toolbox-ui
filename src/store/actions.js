@@ -112,7 +112,10 @@ export const postData = async function ({getters, dispatch}, options) {
     if (response.ok) {
       // const text = await response.text()
       const json = await response.json()
-      return json
+      // return json
+      if (typeof options.success === 'function') {
+        options.success(json)
+      }
     } else if (response.status === 401) {
       // JWT expired
       console.log('JWT expired. logging out user locally.')
@@ -121,7 +124,7 @@ export const postData = async function ({getters, dispatch}, options) {
       const text = await response.text()
       // throw Error(`${response.status} ${response.statusText} - ${text}`)
       if (typeof options.error === 'function') {
-        error({
+        options.error({
           status: response.status,
           statusText: response.statusText,
           text
