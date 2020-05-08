@@ -54,11 +54,13 @@ const actions = {
           endpoint,
           error (data) {
             dispatch('errorNotification', {title: 'Failed provision', message: `${data.status} ${data.statusText} - ${data.text}`})
+          },
+          success (data) {
+            if (showNotification) {
+              dispatch('successNotification', 'Successfully provisioned your account.')
+            }
           }
         })
-        if (showNotification) {
-          dispatch('successNotification', 'Successfully provisioned your account.')
-        }
         dispatch('getProvisionStatus', false)
       } catch (e) {
         console.log('error during provision script', e)
