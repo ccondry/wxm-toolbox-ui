@@ -40,7 +40,7 @@ export default {
 
   data () {
     return {
-      portalUrl: 'https://portal.ccone.net',
+      portalUrl: 'https://cx.cloucherry.com',
       clipboard: 'initial-value'
     }
   },
