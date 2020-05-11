@@ -2,7 +2,7 @@
   <b-navbar class="app-navbar">
         <template slot="start">
           <b-navbar-item tag="div">
-            <a href="/">dCloud Toolbox</a>&nbsp;- Cisco Webex Experience Manager v1
+            <a href="/">dCloud Toolbox</a>&nbsp;- Cisco Webex Experience Management v1
           </b-navbar-item>
         </template>
 
