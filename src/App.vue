@@ -16,8 +16,11 @@
         <small style="padding-right: 2em; padding-left: 1em;">
           UI version {{ uiVersion }}
         </small>
+        <small style="padding-right: 2em;">
+          REST API version {{ apiVersion }}
+        </small>
         <small>
-          API version {{ apiVersion }}
+          Auth API version {{ authApiVersion }}
         </small>
       </div>
     </footer>
@@ -82,6 +85,8 @@ export default {
         // this.loadDemoConfig(false)
         // and get server info
         this.loadServerInfo()
+        // and get auth api info
+        this.getAuthApiInfo()
       }
     })
   },
@@ -94,7 +99,8 @@ export default {
       'endpoints',
       'endpointsLoaded',
       'uiVersion',
-      'apiVersion'
+      'apiVersion',
+      'authApiVersion'
     ])
   },
 
@@ -106,7 +112,8 @@ export default {
       'setJwt',
       'getProvisionStatus',
       'loadVerticals',
-      'loadServerInfo'
+      'loadServerInfo',
+      'getAuthApiInfo'
     ]),
     async authCheck () {
       try {

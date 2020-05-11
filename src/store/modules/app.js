@@ -16,7 +16,42 @@ const state = {
   },
   sessionId: '',
   datacenter: '',
-  apiVersion: 'loading...'
+  apiVersion: 'loading...',
+  authApiVersion: 'loading...'
+}
+
+// return domain name part from client
+const getters = {
+  domain: () => {
+    try {
+      // get current hostname of the browser location
+      const hostname = window.location.hostname
+      // console.log('hostname', hostname)
+
+      // split FQDN into parts
+      const parts = hostname.split('.')
+
+      // get the subdomain
+      const subdomain = parts.shift()
+      console.log('subdomain', subdomain)
+
+      // get the domain name
+      const domain = parts.shift()
+      console.log('domain', domain)
+
+      return domain
+    } catch (e) {
+      console.log('failed to parse hostname:', e)
+      return false
+    }
+  },
+  // is this a cisco.com address? assume dcloud
+  isDcloud: (state, getters) => getters.domain === 'cisco',
+  // is this a cxdemo.net address? it is cxdemo
+  isCxdemo: (state, getters) => getters.domain === 'cxdemo',
+  uiVersion: () => pkg.version,
+  apiVersion: (state, getters) => state.apiVersion,
+  authApiVersion: (state, getters) => state.authApiVersion
 }
 
 const mutations = {
@@ -45,6 +80,10 @@ const mutations = {
 
   [types.SET_SERVER_INFO] (state, data) {
     state.apiVersion = data.version
+  },
+
+  [types.SET_AUTH_API_INFO] (state, data) {
+    state.authApiVersion = data.version
   }
 }
 
@@ -66,6 +105,26 @@ const actions = {
       dispatch('errorNotification', {title: 'Failed to load API server info', error: e})
     } finally {
       dispatch('setLoading', {group: 'app', type: 'serverInfo', value: false})
+    }
+  },
+  async getAuthApiInfo ({getters, dispatch}) {
+    dispatch('setLoading', {group: 'app', type: 'authApiInfo', value: true})
+    const operation = 'auth API info'
+    console.log('getting', operation, '...')
+    try {
+      const endpoint = getters.endpoints.authApiInfo
+      console.log('getting', operation, 'endpoint', endpoint, '...')
+      const response = await dispatch('loadToState', {
+        name: 'get' + operation,
+        endpoint,
+        mutation: types.SET_AUTH_API_INFO
+      })
+      console.log('get', operation, '- response:', response)
+    } catch (e) {
+      console.log('error getting', operation, e)
+      dispatch('errorNotification', {title: 'Failed to get ' + operation, error: e})
+    } finally {
+      dispatch('setLoading', {group: 'app', type: 'authApiInfo', value: false})
     }
   },
   copyToClipboard (options, {string, type = 'Text'}) {
@@ -108,39 +167,6 @@ const actions = {
     // remove the input field
     input.remove()
   }
-}
-
-// return domain name part from client
-const getters = {
-  domain: () => {
-    try {
-      // get current hostname of the browser location
-      const hostname = window.location.hostname
-      // console.log('hostname', hostname)
-
-      // split FQDN into parts
-      const parts = hostname.split('.')
-
-      // get the subdomain
-      const subdomain = parts.shift()
-      console.log('subdomain', subdomain)
-
-      // get the domain name
-      const domain = parts.shift()
-      console.log('domain', domain)
-
-      return domain
-    } catch (e) {
-      console.log('failed to parse hostname:', e)
-      return false
-    }
-  },
-  // is this a cisco.com address? assume dcloud
-  isDcloud: (state, getters) => getters.domain === 'cisco',
-  // is this a cxdemo.net address? it is cxdemo
-  isCxdemo: (state, getters) => getters.domain === 'cxdemo',
-  uiVersion: () => pkg.version,
-  apiVersion: (state, getters) => state.apiVersion
 }
 
 export default {

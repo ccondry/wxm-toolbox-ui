@@ -22,7 +22,8 @@ const endpoints = {
   // get provision status
   provision: authBaseUrl + '/provision',
   webex: authBaseUrl + '/resource/joinWxmSupportRoom',
-  info: baseUrl + '/version'
+  info: baseUrl + '/version',
+  authApiInfo: authBaseUrl + '/version'
 }
 
 
