@@ -1,7 +1,7 @@
 <template>
   <div>
     <b-loading :is-full-page="true" :active="!authCheckDone" :can-cancel="false"></b-loading>
-    <div v-if="authenticated">
+    <div v-if="authenticated" style="min-height: calc(100vh - 1.6em);">
       <!-- endpoints have not finished loading yet -->
       <b-loading :is-full-page="true" :active="!authCheckDone" :can-cancel="false"></b-loading>
       <div v-if="authCheckDone">
@@ -11,9 +11,9 @@
         <app-main></app-main>
       </div>
     </div>
-    <footer class="footer" style="padding: 0; background-color: #ebebeb">
+    <footer class="footer" style="height: 1.6em; padding: 0; background-color: #ebebeb">
       <div class="content">
-        <small style="padding-right: 2em;">
+        <small style="padding-right: 2em; padding-left: 1em;">
           UI version {{ uiVersion }}
         </small>
         <small>
