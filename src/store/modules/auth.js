@@ -82,7 +82,20 @@ const actions = {
       })
       // did they successfully log out of superuser mode?
       if (response.ok) {
-        const json = await response.json()
+        let json
+        try {
+          json = await response.json()
+        } catch (e) {
+          // normal logout, no sujwt
+          // remove JWT
+          commit(types.SET_JWT, null)
+          // remove JWT from localStorage
+          window.localStorage.removeItem('jwt')
+          // remove user from state
+          commit(types.SET_USER, {})
+          return
+        }
+        console.log('logut json response', json)
         if (json.jwt) {
           // store new auth token in localStorage
           dispatch('setJwt', json.jwt)
@@ -101,7 +114,7 @@ const actions = {
         dispatch('errorNotification', `Failed to log out of ${getters.user.username}`)
       }
     } catch (e) {
-      console.log(e.message)
+      console.log(e)
     }
   },
   async checkLogin ({dispatch}) {
