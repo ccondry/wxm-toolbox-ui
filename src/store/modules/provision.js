@@ -7,7 +7,13 @@ const state = {
 
 const getters = {
   provisionStatus: state => state.status,
-  isProvisioned: state => state.status !== null && Object.keys(state.status).length > 0
+  isProvisioned: state => {
+    try {
+      return Object.keys(state.status).length > 0
+    } catch (e) {
+      return false      
+    }
+  }
 }
 
 const mutations = {
