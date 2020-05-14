@@ -55,14 +55,14 @@ export default {
           username: 'dcwxmbanksjeffers' + this.user.id,
           password: 'C1sco12345!',
           name: 'Sandra Jefferson',
-          role: 'Agent'
+          role: 'Contact Center Agent'
         },
         {
           picture: 'https://mm.cxdemo.net/static/images/cumulus/common/author3.png',
           username: 'dcwxmbankrbarrows' + this.user.id,
           password: 'C1sco12345!',
           name: 'Rick Barrows',
-          role: 'Supervisor'
+          role: 'CX Lead'
         }
       ]
     }
