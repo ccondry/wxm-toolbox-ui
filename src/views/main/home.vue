@@ -63,7 +63,7 @@
       <div class="tile is-ancestor" v-if="isProvisioned">
         <div class="tile is-parent">
           <article class="tile is-child box is-horizontal">
-            <h1 class="title">Agents</h1>
+            <h1 class="title">Personas</h1>
             <div class="content">
               <agents :user="user" />
             </div>
