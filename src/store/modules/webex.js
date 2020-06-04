@@ -31,6 +31,11 @@ const actions = {
         // JWT expired
         console.log('JWT expired. logging out user locally.')
         dispatch('unsetJwt')
+      } else if (response.status === 409) {
+        // already in the room
+        if (showNotification) {
+          dispatch('successNotification', 'You are already in Webex Teams support room.')
+        }
       } else {
         // not a 401 error
         console.log('Failed to add user to Webex Teams support room:', `${response.status} ${response.statusText} - ${text}`)
