@@ -93,7 +93,11 @@ export default {
       // return true
     },
     isProvisioned () {
-      return this.provisionStatus[this.vertical].length === 2
+      try {
+        return this.provisionStatus[this.vertical].length === 2
+      } catch (e) {
+        return false
+      }
     },
     agents () {
       const imageFolder = 'https://mm.cxdemo.net/static/images/cumulus/common'
