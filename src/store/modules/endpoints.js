@@ -17,7 +17,8 @@ const getters = {
       webex: authUrlBase + '/resource/joinWxmSupportRoom',
       version: urlBase + '/version',
       provision: urlBase + '/provision',
-      logout: authUrlBase + '/logout'
+      logout: authUrlBase + '/logout',
+      provisionRegister: authUrlBase + '/provision/register'
     }
   },
   defaultRestOptions: (state, getters) => {

@@ -58,6 +58,20 @@ const actions = {
         }
       }
     })
+    // register provision in our database
+    await dispatch('fetch', {
+      message: 'register provision status',
+      group: 'register',
+      type: vertical,
+      url: getters.endpoints.provisionRegister,
+      options: {
+        method: 'POST',
+        body: {
+          demo: 'wxm',
+          version: 'v2-' + vertical
+        }
+      }
+    })
     // check provision status again now to get updated data from server
     dispatch('getProvision', vertical)
   }
