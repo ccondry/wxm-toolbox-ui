@@ -1,8 +1,8 @@
 import * as types from '../mutation-types'
-import { loadToState } from '../actions'
+import Vue from 'vue'
 
 const state = {
-  status: null
+  status: {}
 }
 
 const getters = {
@@ -17,83 +17,49 @@ const getters = {
 }
 
 const mutations = {
-  [types.SET_PROVISION_STATUS] (state, data) {
-    state.status = data[0]
+  [types.SET_PROVISION_STATUS] (state, {vertical, data}) {
+    Vue.set(state.status, vertical, data)
   }
 }
 
 const actions = {
-  async getProvisionStatus ({getters, dispatch}, showNotification = true) {
-    dispatch('setLoading', {group: 'user', type: 'provision', value: true})
-    console.log('loading provision status...')
-    try {
-      const endpoint = getters.endpoints.provision
-      console.log('loading provision status from endpoint', endpoint, '...')
-      const response = await dispatch('loadToState', {
-        name: 'get provision status',
-        endpoint,
-        mutation: types.SET_PROVISION_STATUS,
-        query: {
-          demo: 'wxm',
-          version: 'v1'
+  async getProvision ({getters, dispatch}, vertical) {
+    dispatch('fetch', {
+      message: 'get provision status',
+      group: 'provision',
+      type: vertical,
+      url: getters.endpoints.provision,
+      mutation: types.SET_PROVISION_STATUS,
+      transform: data => {
+        return {
+          vertical,
+          data
         }
-      })
-      console.log('load provision status - response:', response)
-      if (showNotification) {
-        dispatch('successNotification', 'Successfully loaded provision status')
+      },
+      options: {
+        query: {
+          vertical
+        }
       }
-    } catch (e) {
-      console.log('error loading provision status', e)
-      dispatch('errorNotification', {title: 'Failed to load provision status', error: e})
-    } finally {
-      dispatch('setLoading', {group: 'user', type: 'provision', value: false})
-    }
+    })
   },
-  async provisionUser ({getters, dispatch}, {showNotification = true, email, vertical}) {
-    dispatch('setWorking', {group: 'user', type: 'provision', value: true})
-    console.log('starting provision...')
-    try {
-      // go REST
-      const response = await fetch(getters.endpoints.doProvision, {
+  async provisionUser ({getters, dispatch}, vertical) {
+    const email = getters.jwtUser.email
+    await dispatch('fetch', {
+      message: 'provision user',
+      group: 'provision',
+      type: vertical,
+      url: getters.endpoints.provision,
+      options: {
         method: 'POST',
-        headers: {
-          Authorization: 'Bearer ' + getters.jwt
-        },
-        body: JSON.stringify({
+        body: {
           email,
           vertical
-        })
-      })
-      // REST ok?
-      if (response.ok) {
-        console.log('successfully provisioned user account.')
-        // show success message to user
-        if (showNotification) {
-          dispatch('successNotification', 'Successfully provisioned your account.')
         }
-      } else if (response.status === 401) {
-        // JWT expired
-        console.log('JWT expired. logging out user locally.')
-        dispatch('unsetJwt')
-      } else {
-        // not a 401 error
-        console.log('Failed to provisioned user account:', `${response.status} ${response.statusText} - ${text}`)
-        const text = await response.text()
-        // throw Error(`${response.status} ${response.statusText} - ${text}`)
-        dispatch('errorNotification', {
-          title: 'Failed provision',
-          message: `${response.status} ${response.statusText} - ${text}`
-        })
       }
-    } catch (e) {
-      console.log('error during provision script', e)
-      dispatch('errorNotification', {title: 'Error during provision', error: e})
-    } finally {
-      // check provision status again now to get updated data from server
-      dispatch('getProvisionStatus', false)
-      // reset working state
-      dispatch('setWorking', {group: 'user', type: 'provision', value: false})
-    }
+    })
+    // check provision status again now to get updated data from server
+    dispatch('getProvision', vertical)
   }
 }
 

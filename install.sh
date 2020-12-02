@@ -1,20 +1,22 @@
 #!/bin/sh
-echo "running npm install"
-npm i
+echo "running yarn"
+yarn
 if [ $? -eq 0 ]; then
-  echo "running npm run build..."
-  npm run build
+  echo "running yarn build..."
+  yarn build
+  while [ $? != 0 ]
+  do
+    echo "failed to build wxm-toolbox-ui website files. trying again..."
+    yarn build
+  done
+  echo "yarn build successful. copying dist files to www folder..."
+  mkdir -p /var/www/toolbox/wxm
+  cp -rf dist/* /var/www/toolbox/wxm/
   if [ $? -eq 0 ]; then
-    echo "npm build successful"
-    echo "making web files directory"
-    mkdir -p /var/www/toolbox/wxm
-    echo "copying new web files"
-    cp -rf dist/* /var/www/toolbox/wxm/
-    echo "web files copied. You still need to add an entry for nginx to point to this folder."
-    echo "and it would be nice to have a cron job to keep this repo updated."
+    echo "successfully installed wxm-toolbox-ui website files"
   else
-    echo "npm failed to run build script"
+    echo "failed to install wxm-toolbox-ui website files"
   fi
 else
-  echo "failed npm install"
+  echo "yarn failed"
 fi

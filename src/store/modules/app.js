@@ -1,161 +1,207 @@
 import * as types from '../mutation-types'
-import {ToastProgrammatic as Toast} from 'buefy'
-import pkg from '../../../package.json'
+import Vue from 'vue'
+import {ToastProgrammatic as Toast} from 'buefy/src'
+import {addUrlQueryParams} from '../../utils'
+import {version} from '../../../package.json'
 
 const state = {
-  device: {
-    isMobile: false,
-    isTablet: false
+  loading: {
+    app: {},
+    user: {},
+    users: {},
+    dcloud: {},
+    provision: {}
   },
-  sidebar: {
-    opened: false,
-    hidden: false
+  working: {
+    app: {},
+    user: {},
+    users: {},
+    dcloud: {},
+    provision: {}
   },
-  effect: {
-    translate3d: true
-  },
-  sessionId: '',
-  datacenter: '',
-  apiVersion: 'loading...',
-  authApiVersion: 'loading...'
+  isProduction: process.env.NODE_ENV === 'production',
+  uiVersion: version,
+  apiVersion: 'Loading...'
 }
 
-// return domain name part from client
 const getters = {
-  domain: () => {
-    try {
-      // get current hostname of the browser location
-      const hostname = window.location.hostname
-      // console.log('hostname', hostname)
-
-      // split FQDN into parts
-      const parts = hostname.split('.')
-
-      // get the subdomain
-      const subdomain = parts.shift()
-      console.log('subdomain', subdomain)
-
-      // get the domain name
-      const domain = parts.shift()
-      console.log('domain', domain)
-
-      return domain
-    } catch (e) {
-      console.log('failed to parse hostname:', e)
-      return false
-    }
-  },
-  // is this a cisco.com address? assume dcloud
-  isDcloud: (state, getters) => getters.domain === 'cisco',
-  // is this a cxdemo.net address? it is cxdemo
-  isCxdemo: (state, getters) => getters.domain === 'cxdemo',
-  uiVersion: () => pkg.version,
-  apiVersion: (state, getters) => state.apiVersion,
-  authApiVersion: (state, getters) => state.authApiVersion
+  isProduction: state => state.isProduction,
+  loading: state => state.loading,
+  working: state => state.working,
+  uiVersion: state => state.uiVersion,
+  apiVersion: state => state.apiVersion,
+  isLocked: state => false
 }
 
 const mutations = {
-  [types.TOGGLE_DEVICE] (state, device) {
-    state.device.isMobile = device === 'mobile'
-    state.device.isTablet = device === 'tablet'
-  },
+  [types.SET_WORKING] (state, data) {
+    // if state container for this group is not existing, create it
+    if (!state.working[data.group]) {
+      Vue.set(state.working, data.group, {})
+    }
 
-  [types.TOGGLE_SIDEBAR] (state, config) {
-    if (state.device.isMobile && config.hasOwnProperty('opened')) {
-      state.sidebar.opened = config.opened
+    // if state container for this type is not existing, create it
+    if (!state.working[data.group][data.type]) {
+      Vue.set(state.working[data.group], data.type, data.value)
     } else {
-      state.sidebar.opened = true
-    }
-
-    if (config.hasOwnProperty('hidden')) {
-      state.sidebar.hidden = config.hidden
+      state.working[data.group][data.type] = data.value
     }
   },
+  [types.SET_LOADING] (state, data) {
+    // if state container for this group is not existing, create it
+    if (!state.loading[data.group]) {
+      Vue.set(state.loading, data.group, {})
+    }
 
-  [types.SWITCH_EFFECT] (state, effectItem) {
-    for (let name in effectItem) {
-      state.effect[name] = effectItem[name]
+    // if state container for this type is not existing, create it
+    if (!state.loading[data.group][data.type]) {
+      Vue.set(state.loading[data.group], data.type, data.value)
+    } else {
+      state.loading[data.group][data.type] = data.value
     }
   },
-
-  [types.SET_SERVER_INFO] (state, data) {
+  [types.SET_API_VERSION] (state, data) {
     state.apiVersion = data.version
-  },
-
-  [types.SET_AUTH_API_INFO] (state, data) {
-    state.authApiVersion = data.version
   }
 }
 
 const actions = {
-  async loadServerInfo ({getters, dispatch}) {
-    dispatch('setLoading', {group: 'app', type: 'serverInfo', value: true})
-    console.log('loading API server info...')
+  async fetch ({commit, getters, dispatch}, {
+    group,
+    type,
+    url,
+    options = {},
+    mutation,
+    message,
+    showNotification = true,
+    onError,
+    transform
+  }) {
+    message = message || `${options.method === 'POST' ? 'save' : 'get'} ${group} ${type}`
+    if (!url) {
+      throw Error('url is a required parameter for fetch ' + message)
+    }
+    console.log(`${message}...`)
+    const loadingOrWorking = !options.method || options.method === 'GET' ? 'setLoading' : 'setWorking'
+    dispatch(loadingOrWorking, {group, type, value: true})
     try {
-      const endpoint = getters.endpoints.info
-      console.log('loading API server info endpoint', endpoint, '...')
-      const response = await dispatch('loadToState', {
-        name: 'get API server info',
-        endpoint,
-        mutation: types.SET_SERVER_INFO
-      })
-      console.log('load API server info - response:', response)
+      // const data = await dispatch('fetch', {url, options})
+      // set default headers
+      options.headers = options.headers || {}
+      // set content type to JSON by default
+      options.headers['Content-Type'] = options.headers['Content-Type'] || 'application/json'
+      // set accept to JSON by default
+      options.headers['Accept'] = options.headers['Accept'] || 'application/json'
+      // set JWT auth header by default
+      options.headers['Authorization'] = options.headers['Authorization'] || 'Bearer ' + getters.jwt
+      // set instant demo instance name
+      // options.headers['Instance'] = getters.instanceName
+      // stringify body if it is an object
+      if (typeof options.body === 'object') {
+        options.body = JSON.stringify(options.body)
+      }
+      // add query parameters to URL
+      const endpoint = addUrlQueryParams(url, options.query)
+      // console.log('endpoint', endpoint)
+      const response = await window.fetch(endpoint, options)
+      // get the response body as text
+      const text = await response.text()
+      // response code 200 - 299?
+      if (response.ok) {
+        try {
+          // parse response text into JSON
+          const json = JSON.parse(text)
+          console.log(`${message} success:`, json)
+          if (typeof mutation === 'string') {
+            if (typeof transform === 'function') {
+              // put transformed JSON data into state
+              commit(mutation, transform(json))
+            } else {
+              // put JSON data into state
+              commit(mutation, json)
+            }
+          }
+          return json
+        } catch (e) {
+          // body is not json data. return the raw text, and don't attempt
+          // to put it into state
+          console.log(`${message} success:`, text)
+          return text
+        }
+      } else if (response.status === 401) {
+        // expired JWT. forget jwt and forward to SSO login
+        window.localStorage.removeItem('jwt')
+        return dispatch('login')
+      } else {
+        // not OK and not 401
+        let m = text
+        try {
+          const json = JSON.parse(text)
+          m = json.message || json.apiError || json.error_description || json[Object.keys(json)[0]]
+        } catch (e) {
+          // use empty string instead of text/html content
+          const regex = /text\/html/i
+          if (response.headers.get('content-type').match(regex)) {
+            console.log('removing html response from message')
+            m = ''
+          }
+        }
+        // console.log('bad response', m)
+        let message = `${response.status} ${response.statusText}`
+        if (m.length) {
+          message += ` - ${m}`
+        }
+        const error = Error(message)
+        error.status = response.status
+        error.statusText = response.statusText
+        error.text = m
+        // throw error
+        if (typeof onError === 'function') {
+          onError(error)
+        }
+      }
     } catch (e) {
-      console.log('error loading API server info', e)
-      dispatch('errorNotification', {title: 'Failed to load API server info', error: e})
+      console.error(`${message} failed: ${e.message}`)
+      if (showNotification) {
+        Toast.open({
+          message: `Failed to ${message}: ${e.message}`,
+          type: 'is-danger',
+          duration: 6 * 1000,
+          queue: false
+        })
+      }
     } finally {
-      dispatch('setLoading', {group: 'app', type: 'serverInfo', value: false})
+      dispatch(loadingOrWorking, {group, type, value: false})
     }
   },
-  async getAuthApiInfo ({getters, dispatch}) {
-    dispatch('setLoading', {group: 'app', type: 'authApiInfo', value: true})
-    const operation = 'auth API info'
-    console.log('getting', operation, '...')
-    try {
-      const endpoint = getters.endpoints.authApiInfo
-      console.log('getting', operation, 'endpoint', endpoint, '...')
-      const response = await dispatch('loadToState', {
-        name: 'get' + operation,
-        endpoint,
-        mutation: types.SET_AUTH_API_INFO
-      })
-      console.log('get', operation, '- response:', response)
-    } catch (e) {
-      console.log('error getting', operation, e)
-      dispatch('errorNotification', {title: 'Failed to get ' + operation, error: e})
-    } finally {
-      dispatch('setLoading', {group: 'app', type: 'authApiInfo', value: false})
-    }
+  setWorking ({commit}, {group, type, value = true}) {
+    commit(types.SET_WORKING, {group, type, value})
   },
-  copyToClipboard (options, {string, type = 'Text'}) {
-    console.log('copyToClipboard', type, string)
+  setLoading ({commit}, {group, type, value = true}) {
+    commit(types.SET_LOADING, {group, type, value})
+  },
+  async getApiVersion ({commit, dispatch, getters}) {
+    // get REST API version
+    dispatch('fetch', {
+      group: 'app',
+      type: 'version',
+      url: getters.endpoints.version,
+      mutation: types.SET_API_VERSION,
+    })
+  },
+  copyToClipboard ({}, {string, type = 'Text'}) {
     // copy text to clipboard
     const input = document.createElement('input')
     document.body.appendChild(input)
     input.value = string
-    // input.focus()
     input.select()
-    // console.log('input field', input)
-    // const range = document.createRange()
-    // range.selectNode(input)
-    // window.getSelection().addRange(range)
-    // console.log('range', range)
     const result = document.execCommand('copy')
     if (result === 'unsuccessful') {
       // failed
       console.error('Failed to copy text.')
     } else {
       // success
-      // this.$snackbar.open({
-      //   message: 'Text Copied',
-      //   type: 'is-success',
-      //   position: 'is-top'
-      // })
       Toast.open({
-        // duration: 5000,
-        // message: `load brands failed`,
-        // position: 'is-bottom',
-        // type: 'is-danger'
         message: type + ' Copied to Your Clipboard',
         queue: false
       })
@@ -171,7 +217,7 @@ const actions = {
 
 export default {
   state,
-  actions,
   getters,
-  mutations
+  mutations,
+  actions
 }

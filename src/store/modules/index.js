@@ -1,21 +1,15 @@
-import menu from './menu'
 import app from './app'
-import auth from './auth'
-import notifications from './notifications'
 import user from './user'
-import provision from './provision'
-import cumulus from './cumulus'
 import endpoints from './endpoints'
 import webex from './webex'
+import verticals from './verticals'
+import provision from './provision'
 
 export default {
-  menu,
   app,
-  auth,
-  notifications,
   user,
-  provision,
-  cumulus,
   endpoints,
-  webex
+  webex,
+  verticals,
+  provision
 }

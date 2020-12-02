@@ -1,41 +1,34 @@
-let baseUrl
-let authBaseUrl
-
-const isProduction = process.env.NODE_ENV === 'production'
-
-if (isProduction) {
-  baseUrl = window.location.origin + '/api/v1/wxm'
-  authBaseUrl = window.location.origin + '/api/v1/auth'
-} else {
-  baseUrl = 'http://localhost:3066/api/v1/wxm'
-  authBaseUrl = 'http://localhost:3032/api/v1/auth'
-}
-
-const endpoints = {
-  login: authBaseUrl + '/login',
-  logout: authBaseUrl + '/logout',
-  user: authBaseUrl + '/user',
-  vertical: 'https://mm.cxdemo.net/api/v1/verticals?all=true',
-  cumulus: authBaseUrl + '/cumulus?demo=wxm',
-  // do provision
-  doProvision: baseUrl + '/provision',
-  // get provision status
-  provision: authBaseUrl + '/provision',
-  webex: authBaseUrl + '/resource/joinWxmSupportRoom',
-  info: baseUrl + '/version',
-  authApiInfo: authBaseUrl + '/version'
-}
-
-
-const state = {
-  endpoints
-}
-
 const getters = {
-  endpoints: state => state.endpoints
+  endpoints: (state, getters) => {
+    let urlBase
+    let authUrlBase
+
+    if (getters.isProduction) {
+      urlBase = '/api/v1/wxm'
+      authUrlBase = '/api/v1/auth'
+    } else {
+      // auth API
+      authUrlBase = 'http://localhost:3032/api/v1/auth'
+      // direct to wxm-toolbox-api
+      urlBase = 'http://localhost:3066/api/v1/wxm'
+    }
+
+    return {
+      webex: authUrlBase + '/resource/joinWxmSupportRoom',
+      version: urlBase + '/version',
+      provision: urlBase + '/provision',
+      logout: authUrlBase + '/logout'
+    }
+  },
+  defaultRestOptions: (state, getters) => {
+    return {
+      headers: {
+        Authorization: 'Bearer ' + getters.jwt
+      }
+    }
+  }
 }
 
 export default {
-  state,
   getters
 }
