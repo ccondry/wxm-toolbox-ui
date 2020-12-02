@@ -31,13 +31,17 @@
         />
       </div>
       <!-- portal button -->
-      <a
-      href="https://cx.cloudcherry.com/#/login"
-      target="_blank"
-      class="button is-primary is-rounded is-fullwidth"
-      >
-        Webex Experience Mangement Portal
-      </a>
+      <div class="buttons" style="justify-content: space-around;">
+        <b-field>
+          <a
+          href="https://cx.cloudcherry.com/"
+          target="_blank"
+          class="button is-primary is-rounded is-fullwidth"
+          >
+            Go to Webex Experience Mangement Portal
+          </a>
+        </b-field>
+      </div>
     </div>
 
     <!-- agents are not provisioned -->
