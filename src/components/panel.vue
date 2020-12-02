@@ -7,12 +7,37 @@
     <div
     v-if="title.length"
     slot="trigger"
+    slot-scope="props"
     class="panel-heading"
     role="button"
     :aria-controls="ariaId"
     >
-      <strong>{{ title }}</strong>
+      <strong>
+        {{ title }}
+      </strong>
+      <span
+      style="float: right;"
+      >
+        <b-icon type="is-primary" :icon="props.open ? 'menu-down' : 'menu-up'" />
+      </span>
     </div>
+    <!-- <div
+    v-if="title.length"
+    slot="trigger"
+    slot-scope="props"
+    class="card-header panel-heading"
+    role="button"
+    >
+      <p class="card-header-title">
+          {{ title }}
+      </p>
+      <a class="card-header-icon">
+        <b-icon
+            :icon="props.open ? 'menu-down' : 'menu-up'">
+        </b-icon>
+      </a>
+    </div> -->
+  
     <div
     class="panel-block"
     style="background-color: white;"
