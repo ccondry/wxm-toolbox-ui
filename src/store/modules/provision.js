@@ -49,7 +49,7 @@ const actions = {
       dispatch('setLoading', {group: 'user', type: 'provision', value: false})
     }
   },
-  async provisionUser ({getters, dispatch}, {showNotification = true, email}) {
+  async provisionUser ({getters, dispatch}, {showNotification = true, email, vertical}) {
     dispatch('setWorking', {group: 'user', type: 'provision', value: true})
     console.log('starting provision...')
     try {
@@ -60,7 +60,8 @@ const actions = {
           Authorization: 'Bearer ' + getters.jwt
         },
         body: JSON.stringify({
-          email
+          email,
+          vertical
         })
       })
       // REST ok?
