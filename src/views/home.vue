@@ -5,7 +5,7 @@
 
     <!-- the available agents in each vertical/tenant -->
     <agents vertical="bank" />
-    <agents vertical="heal" />
+    <!-- <agents vertical="heal" /> -->
     <agents vertical="product" />
     <agents vertical="retail" />
 
