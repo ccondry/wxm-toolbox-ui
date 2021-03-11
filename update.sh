@@ -27,7 +27,8 @@ else
         echo "failed to build wxm-toolbox-ui website files. trying again..."
         yarn build
       done
-      echo "yarn build successful. copying dist files to www folder..."
+      echo "yarn build successful. cleaning www folder and copying dist files to www folder..."
+      rm -rf /var/www/toolbox/wxm/*
       cp -rf dist/* /var/www/toolbox/wxm/
       if [ $? -eq 0 ]; then
         echo "successfully installed wxm-toolbox-ui website files"
