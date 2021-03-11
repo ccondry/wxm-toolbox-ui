@@ -1,6 +1,6 @@
 {
   "name": "wxm-toolbox-ui",
-  "version": "2020.3.10",
+  "version": "2021.3.11",
   "description": "UI for the dCloud WXM v2 Instant Demo Toolbox",
   "author": "Coty Condry <ccondry@cisco.com>",
   "main": "dist/js/index.common.js",
