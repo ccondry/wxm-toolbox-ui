@@ -50,12 +50,8 @@ export default {
   watch: {
     isLoggedIn (val, oldVal) {
       if (val && !oldVal) {
-        // user just logged in
-        // load provision info
-        this.getProvision('bank')
-        this.getProvision('heal')
-        this.getProvision('product')
-        this.getProvision('retail')
+        // user just logged in. get provision status info.
+        this.getProvision()
       } else if (!val && oldVal) {
         // user just logged out. make them log in again.
         this.login()

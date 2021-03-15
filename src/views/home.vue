@@ -42,11 +42,7 @@ export default {
       'jwtUser',
       'loading',
       'working',
-      'instance',
-      'demoBaseConfig',
-      'isProvisioned',
-      'isLocked',
-      'demoUserConfig'
+      'isLocked'
     ])
   },
 

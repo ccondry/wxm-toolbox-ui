@@ -28,6 +28,7 @@
         v-for="(agent, i) of agents"
         :key="i"
         :agent="agent"
+        :vertical="vertical"
         />
       </div>
       <!-- portal button -->
@@ -97,19 +98,12 @@ export default {
       'working'
     ]),
     isWorking () {
-      return this.working.provision[this.vertical]
+      return this.working.provision[this.vertical] || false
       // return true
     },
     isLoading () {
-      return this.loading.provision[this.vertical]
+      return this.loading.provision.list
       // return true
-    },
-    isProvisioned () {
-      try {
-        return this.provisionStatus[this.vertical].length === 2
-      } catch (e) {
-        return false
-      }
     },
     agents () {
       const imageFolder = 'https://mm.cxdemo.net/static/images/cumulus/common'
@@ -131,6 +125,23 @@ export default {
     },
     verticalName () {
       return this.verticals[this.vertical].name
+    },
+    isProvisioned () {
+      // does this vertical have agent or supervisor in any provisioning state?
+      try {
+        return this.verticalProvisionStatus.agent ||
+          this.verticalProvisionStatus.supervisor
+      } catch (e) {
+        return false
+      }
+    },
+    verticalProvisionStatus () {
+      // provision status for this vertical
+      try {
+        return this.provisionStatus[this.vertical]
+      } catch (e) {
+        return null
+      }
     }
   },
 

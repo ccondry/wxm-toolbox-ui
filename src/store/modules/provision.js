@@ -1,55 +1,45 @@
 import * as types from '../mutation-types'
-import Vue from 'vue'
+import {ToastProgrammatic as Toast} from 'buefy/src'
 
 const state = {
   status: {}
 }
 
 const getters = {
-  provisionStatus: state => state.status,
-  isProvisioned: state => {
-    try {
-      return Object.keys(state.status).length > 0
-    } catch (e) {
-      return false      
-    }
-  }
+  provisionStatus: state => state.status
 }
 
 const mutations = {
-  [types.SET_PROVISION_STATUS] (state, {vertical, data}) {
-    Vue.set(state.status, vertical, data)
+  [types.SET_PROVISION_STATUS] (state, data) {
+    console.log('SET_PROVISION_STATUS', data[0])
+    state.status = data[0].demo['wxm-v2']
   }
 }
 
 const actions = {
-  async getProvision ({getters, dispatch}, vertical) {
+  async getProvision ({getters, dispatch}) {
     dispatch('fetch', {
       message: 'get provision status',
       group: 'provision',
-      type: vertical,
-      url: getters.endpoints.provision,
+      type: 'list',
+      url: getters.endpoints.getProvision,
       mutation: types.SET_PROVISION_STATUS,
-      transform: data => {
-        return {
-          vertical,
-          data
-        }
-      },
       options: {
         query: {
-          vertical
+          demo: 'wxm',
+          version: 'v2'
         }
       }
     })
   },
   async provisionUser ({getters, dispatch}, vertical) {
     const email = getters.jwtUser.email
-    await dispatch('fetch', {
+    const response = await dispatch('fetch', {
       message: 'provision user',
       group: 'provision',
       type: vertical,
-      url: getters.endpoints.provision,
+      url: getters.endpoints.doProvision,
+      message: 'Provision ' + vertical,
       options: {
         method: 'POST',
         body: {
@@ -58,8 +48,16 @@ const actions = {
         }
       }
     })
-    // check provision status again now to get updated data from server
-    dispatch('getProvision', vertical)
+    if (response instanceof Error) {
+      Toast.open({
+        message: `Failed to provision you for ${vertical}: ${response.message}`,
+        duration: 10 * 1000,
+        type: 'is-danger'
+      })
+    } else {
+      // check provision status again now to get updated data from server
+      dispatch('getProvision', vertical)
+    }
   }
 }
 

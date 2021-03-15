@@ -159,6 +159,7 @@ const actions = {
         if (typeof onError === 'function') {
           onError(error)
         }
+        return error
       }
     } catch (e) {
       console.error(`${message} failed: ${e.message}`)
