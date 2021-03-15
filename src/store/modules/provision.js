@@ -18,7 +18,7 @@ const mutations = {
 
 const actions = {
   async getProvision ({getters, dispatch}) {
-    dispatch('fetch', {
+    const response = await dispatch('fetch', {
       message: 'get provision status',
       group: 'provision',
       type: 'list',
@@ -31,6 +31,39 @@ const actions = {
         }
       }
     })
+    if (response instanceof Error) {
+      // error
+    } else {
+      // success
+      // check if provision status is "started" for any agent or supervisor
+      let keys
+      try {
+        keys = Object.keys(response[0].demo['wxm-v2'])
+      } catch (e) {
+        // no demo information on user, so provision must not be started
+        return
+      }
+      let refresh = false
+      for (const key of keys) {
+        const provision = response[0].demo['wxm-v2'][key]
+        try {
+          if (
+            provision.agent === 'started' ||
+            provision.supervisor === 'started'
+          ) {
+            refresh = true
+          }
+        } catch (e) {
+          continue
+        }
+      }
+      // and check provision status for them again in a moment
+      if (refresh) {
+        window.setTimeout(() => {
+          dispatch('getProvision')
+        }, 10 * 1000)
+      }
+    }
   },
   async provisionUser ({getters, dispatch}, vertical) {
     const email = getters.jwtUser.email
