@@ -42,6 +42,18 @@
           </a>
         </b-field>
       </div>
+
+      <!-- reprovision button -->
+      <div class="buttons" style="justify-content: space-around;">
+        <b-button
+        type="is-success"
+        rounded
+        :disabled="isWorking"
+        @click="clickProvision"
+        >
+          Reprovision Me for {{ verticalName }}
+        </b-button>
+      </div>
     </div>
 
     <!-- agents are not provisioned -->
