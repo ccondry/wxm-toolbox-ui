@@ -65,12 +65,15 @@ export default {
     this.checkJwt()
     // get the REST API version
     this.getApiVersion()
+    // get the auth REST API version
+    this.getAuthApiVersion()
   },
 
   methods: {
     ...mapActions([
       'checkJwt',
       'getApiVersion',
+      'getAuthApiVersion',
       'login',
       'getProvision'
     ]),

@@ -21,7 +21,8 @@ const state = {
   },
   isProduction: process.env.NODE_ENV === 'production',
   uiVersion: version,
-  apiVersion: 'Loading...'
+  apiVersion: 'Loading...',
+  authApiVersion: 'Loading...'
 }
 
 const getters = {
@@ -30,6 +31,7 @@ const getters = {
   working: state => state.working,
   uiVersion: state => state.uiVersion,
   apiVersion: state => state.apiVersion,
+  authApiVersion: state => state.authApiVersion,
   isLocked: state => false
 }
 
@@ -62,6 +64,9 @@ const mutations = {
   },
   [types.SET_API_VERSION] (state, data) {
     state.apiVersion = data.version
+  },
+  [types.SET_AUTH_API_VERSION] (state, data) {
+    state.authApiVersion = data.version
   }
 }
 
@@ -188,6 +193,15 @@ const actions = {
       type: 'version',
       url: getters.endpoints.version,
       mutation: types.SET_API_VERSION,
+    })
+  },
+  async getAuthApiVersion ({commit, dispatch, getters}) {
+    // get REST API version
+    dispatch('fetch', {
+      group: 'app',
+      type: 'version',
+      url: getters.endpoints.authVersion,
+      mutation: types.SET_AUTH_API_VERSION,
     })
   },
   copyToClipboard ({}, {string, type = 'Text'}) {
