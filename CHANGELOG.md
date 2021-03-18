@@ -4,6 +4,13 @@ Version numbers are semver-compatible dates in YYYY.MM.DD-X format,
 where X is the revision number
 
 
+# 2021.3.18
+
+### Bug Fixes
+* **Support Room:** Show success or error notification when joining the support
+room in Webex.
+
+
 # 2021.3.16
 
 ### Features
