@@ -89,7 +89,7 @@
     "i": "^0.3.6",
     "json-loader": "^0.5.7",
     "json-templater": "^1.0.4",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "mini-css-extract-plugin": "^0.4.1",
     "node-sass": "^4.11.0",
     "npm": "^6.10.0",
