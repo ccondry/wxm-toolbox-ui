@@ -35,7 +35,7 @@
       <div class="buttons" style="justify-content: space-around;">
         <b-field>
           <a
-          href="https://cx.cloudcherry.com/"
+          href="https://xm.webex.com/"
           target="_blank"
           class="button is-primary is-rounded is-fullwidth"
           >
