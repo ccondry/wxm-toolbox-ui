@@ -35,7 +35,7 @@
     "@momentum-ui/core": "^19.9.18",
     "buefy": "https://github.com/ccondry/buefy.git#dev",
     "bulma": "https://github.com/ccondry/bulma.git",
-    "moment": "^2.29.1",
+    "moment": "^2.29.4",
     "vue": "2.6.12",
     "vue-fragment": "^1.5.1",
     "vue-router": "^3.1.3",
